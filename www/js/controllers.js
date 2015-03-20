@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('Browse', function($scope) {
+.controller('BrowseCtrl', function($scope) {
   // Open the login modal
   $scope.buy = function() {
     PayPalApp.buy();

@@ -17,6 +17,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    PayPalApp.initPaymentUI();
   });
 })
 
@@ -44,7 +46,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     views: {
       'menuContent': {
         templateUrl: "templates/browse.html",
-        controller: 'Browse'
+        controller: 'BrowseCtrl'
       }
     }
   })
