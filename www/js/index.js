@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-  // Application Constructor
+var PayPalApp = {
+  // PayPalApplication Constructor
   initialize: function() {
     this.bindEvents();
   },
@@ -31,9 +31,9 @@ var app = {
   // deviceready Event Handler
   //
   // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicity call 'app.receivedEvent(...);'
+  // function, we must explicity call 'PayPalApp.receivedEvent(...);'
   onDeviceReady: function() {
-    app.receivedEvent('deviceready');
+    PayPalApp.receivedEvent('deviceready');
   },
   // Update DOM on a Received Event
   receivedEvent: function(id) {
@@ -47,14 +47,14 @@ var app = {
     console.log('Received Event: ' + id);
 
     // start to initialize PayPalMobile library
-    app.initPaymentUI();
+    PayPalApp.initPaymentUI();
   },
   initPaymentUI: function() {
     var clientIDs = {
       "PayPalEnvironmentProduction": "YOUR_PRODUCTION_CLIENT_ID",
       "PayPalEnvironmentSandbox": "YOUR_SANDBOX_CLIENT_ID"
     };
-    PayPalMobile.init(clientIDs, app.onPayPalMobileInit);
+    PayPalMobile.init(clientIDs, PayPalApp.onPayPalMobileInit);
 
   },
   onSuccesfulPayment: function(payment) {
@@ -79,6 +79,12 @@ var app = {
     });
     return config;
   },
+
+  buy : function () {
+    PayPalMobile.renderSinglePaymentUI(PayPalApp.createPayment(), PayPalApp.onSuccesfulPayment,
+        PayPalApp.onUserCanceled);
+  },
+
   onPrepareRender: function() {
     // buttons defined in index.html
     //  <button id="buyNowBtn"> Buy Now !</button>
@@ -90,13 +96,12 @@ var app = {
 
     buyNowBtn.onclick = function(e) {
       // single payment
-      PayPalMobile.renderSinglePaymentUI(app.createPayment(), app.onSuccesfulPayment,
-        app.onUserCanceled);
+      PayPalApp.buy();
     };
 
     buyInFutureBtn.onclick = function(e) {
       // future payment
-      PayPalMobile.renderFuturePaymentUI(app.onAuthorizationCallback, app
+      PayPalMobile.renderFuturePaymentUI(PayPalApp.onAuthorizationCallback, PayPalApp
         .onUserCanceled);
     };
 
@@ -104,18 +109,18 @@ var app = {
       // profile sharing
       PayPalMobile.renderProfileSharingUI(["profile", "email", "phone",
         "address", "futurepayments", "paypalattributes"
-      ], app.onAuthorizationCallback, app.onUserCanceled);
+      ], PayPalApp.onAuthorizationCallback, PayPalApp.onUserCanceled);
     };
   },
   onPayPalMobileInit: function() {
     // must be called
     // use PayPalEnvironmentNoNetwork mode to get look and feel of the flow
-    PayPalMobile.prepareToRender("PayPalEnvironmentNoNetwork", app.configuration(),
-      app.onPrepareRender);
+    PayPalMobile.prepareToRender("PayPalEnvironmentNoNetwork", PayPalApp.configuration(),
+      PayPalApp.onPrepareRender);
   },
   onUserCanceled: function(result) {
     console.log(result);
   }
 };
 
-app.initialize();
+PayPalApp.initialize();

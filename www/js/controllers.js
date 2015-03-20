@@ -1,5 +1,12 @@
 angular.module('starter.controllers', [])
 
+.controller('Browse', function($scope) {
+  // Open the login modal
+  $scope.buy = function() {
+    PayPalApp.buy();
+  };
+})
+
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
   // Form data for the login modal
   $scope.loginData = {};
@@ -10,6 +17,8 @@ angular.module('starter.controllers', [])
   }).then(function(modal) {
     $scope.modal = modal;
   });
+
+  
 
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
