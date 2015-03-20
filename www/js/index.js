@@ -16,45 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var app = {
-  // Application Constructor
-  initialize: function() {
-    this.bindEvents();
-  },
-  // Bind Event Listeners
-  //
-  // Bind any events that are required on startup. Common events are:
-  // 'load', 'deviceready', 'offline', and 'online'.
-  bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-  },
-  // deviceready Event Handler
-  //
-  // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicity call 'app.receivedEvent(...);'
-  onDeviceReady: function() {
-    app.receivedEvent('deviceready');
-  },
-  // Update DOM on a Received Event
-  receivedEvent: function(id) {
-    var parentElement = document.getElementById(id);
-    var listeningElement = parentElement.querySelector('.listening');
-    var receivedElement = parentElement.querySelector('.received');
-
-    listeningElement.setAttribute('style', 'display:none;');
-    receivedElement.setAttribute('style', 'display:block;');
-
-    console.log('Received Event: ' + id);
-
-    // start to initialize PayPalMobile library
-    app.initPaymentUI();
-  },
+var PayPalApp = {
   initPaymentUI: function() {
     var clientIDs = {
       "PayPalEnvironmentProduction": "YOUR_PRODUCTION_CLIENT_ID",
       "PayPalEnvironmentSandbox": "YOUR_SANDBOX_CLIENT_ID"
     };
-    PayPalMobile.init(clientIDs, app.onPayPalMobileInit);
+    PayPalMobile.init(clientIDs, PayPalApp.onPayPalMobileInit);
 
   },
   onSuccesfulPayment: function(payment) {
@@ -79,6 +47,12 @@ var app = {
     });
     return config;
   },
+
+  buy : function () {
+    PayPalMobile.renderSinglePaymentUI(PayPalApp.createPayment(), PayPalApp.onSuccesfulPayment,
+        PayPalApp.onUserCanceled);
+  },
+
   onPrepareRender: function() {
     // buttons defined in index.html
     //  <button id="buyNowBtn"> Buy Now !</button>
@@ -90,13 +64,12 @@ var app = {
 
     buyNowBtn.onclick = function(e) {
       // single payment
-      PayPalMobile.renderSinglePaymentUI(app.createPayment(), app.onSuccesfulPayment,
-        app.onUserCanceled);
+      PayPalApp.buy();
     };
 
     buyInFutureBtn.onclick = function(e) {
       // future payment
-      PayPalMobile.renderFuturePaymentUI(app.onAuthorizationCallback, app
+      PayPalMobile.renderFuturePaymentUI(PayPalApp.onAuthorizationCallback, PayPalApp
         .onUserCanceled);
     };
 
@@ -104,18 +77,18 @@ var app = {
       // profile sharing
       PayPalMobile.renderProfileSharingUI(["profile", "email", "phone",
         "address", "futurepayments", "paypalattributes"
-      ], app.onAuthorizationCallback, app.onUserCanceled);
+      ], PayPalApp.onAuthorizationCallback, PayPalApp.onUserCanceled);
     };
   },
   onPayPalMobileInit: function() {
     // must be called
     // use PayPalEnvironmentNoNetwork mode to get look and feel of the flow
-    PayPalMobile.prepareToRender("PayPalEnvironmentNoNetwork", app.configuration(),
-      app.onPrepareRender);
+    PayPalMobile.prepareToRender("PayPalEnvironmentNoNetwork", PayPalApp.configuration(),
+      PayPalApp.onPrepareRender);
   },
   onUserCanceled: function(result) {
     console.log(result);
   }
 };
 
-app.initialize();
+PayPalApp.initialize();
